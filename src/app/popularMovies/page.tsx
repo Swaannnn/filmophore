@@ -7,6 +7,7 @@ import {Movie} from "@/models/model";
 export default function PopularMovies() {
     const [data, setData] = useState<any>(null)
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         async function fetchData() {
@@ -17,6 +18,12 @@ export default function PopularMovies() {
         }
 
         fetchData()
+            .then(() => {
+                console.log('fetch completed')
+            })
+            .catch(err => {
+                setError(err.message)
+            })
     }, []);
 
     let movies = []
@@ -33,6 +40,7 @@ export default function PopularMovies() {
     }
 
     if (loading) return <p>Loading...</p>
+    if (error) return <p>{error}</p>
 
     return (
         <main>
