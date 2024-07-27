@@ -1,3 +1,5 @@
+import SearchBar from "@/components/SearchBar/SearchBar";
+
 export default function Header() {
     return (
         <header className="flex justify-evenly">
@@ -8,6 +10,9 @@ export default function Header() {
                 <a href="/popularMovies" className="hover:underline">Popular Movies</a>
                 <a>Page 2</a>
                 <a>Page 3</a>
+            </div>
+            <div>
+                <SearchBar />
             </div>
             <div>
                 <a>About me</a>
