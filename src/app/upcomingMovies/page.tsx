@@ -4,14 +4,14 @@ import {ReactElement, useEffect, useState} from "react";
 import MovieCard from "@/components/MovieCard/MovieCard";
 import {Movie} from "@/models/model";
 
-export default function PopularMovies(): ReactElement {
+export default function LatestMovies(): ReactElement {
     const [movies, setMovies] = useState<any>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect((): void => {
         async function fetchData(): Promise<void> {
-            const res: Response = await fetch('/api/popularMovies')
+            const res: Response = await fetch('/api/upcomingMovies')
             const result = await res.json()
             setMovies(result)
             setLoading(false)
@@ -31,7 +31,7 @@ export default function PopularMovies(): ReactElement {
 
     return (
         <div>
-            <h1>Films populaires</h1>
+            <h1>Films à venir</h1>
             <div>
                 {movies.length > 0 ? (
                     movies.map((movie: Movie) => (

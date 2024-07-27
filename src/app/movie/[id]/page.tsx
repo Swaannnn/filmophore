@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import MovieCard from "@/components/MovieCard/MovieCard";
+import MovieCardDetails from "@/components/MovieCardDetails/MovieCardDetails";
 // import {Movie} from "@/models/model";
 
 // function fetchMovie(id: string) {
@@ -12,8 +13,9 @@ import MovieCard from "@/components/MovieCard/MovieCard";
 export default function Movie({ params } : { params: {id: string} }) {
     const id = params.id
 
+    // remplacer any par Movie apres je pense
     const [movie, setMovie] = useState<any>(null)
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export default function Movie({ params } : { params: {id: string} }) {
         }
 
         fetchData()
-            .then(() => {
+            .then((): void => {
                 console.log('fetch completed')
             })
             .catch(err => {
@@ -36,10 +38,18 @@ export default function Movie({ params } : { params: {id: string} }) {
     if (loading) return <p>Loading...</p>
     if (error) return <p>{error}</p>
 
+    if (movie.success == false) {
+        return (
+            <div>
+                <p>Aucun film avec cet id</p>
+            </div>
+        //     a refaire mieux ici là
+        )
+    }
+
     return (
         <div>
-            <MovieCard key={movie.id} movie={movie}></MovieCard>
-            {/* Faire MovieDetails (par exemple) pour la page détaillée */}
+            <MovieCardDetails key={movie.id} movie={movie}></MovieCardDetails>
         </div>
     )
 }

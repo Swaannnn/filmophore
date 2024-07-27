@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const url = 'https://api.themoviedb.org/3/movie/popular?language=fr-FR&page=1'
+    const url = 'https://api.themoviedb.org/3/movie/upcoming?language=fr-FR&page=1'
     const options = {
         method: 'GET',
         headers: {
