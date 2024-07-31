@@ -1,26 +1,21 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import MovieCard from "@/components/MovieCard/MovieCard";
-import MovieCardDetails from "@/components/MovieCardDetails/MovieCardDetails";
-// import {Movie} from "@/models/model";
+import { ReactElement, useEffect, useState } from "react"
+import MovieCardDetails from "@/components/MovieCardDetails"
+import Loader from "@/components/Loader/Loader"
+import { MovieInterface } from "@/models/model"
 
-// function fetchMovie(id: string) {
-//     const response = await fetch()
-// }
-
-// async ?
-export default function Movie({ params } : { params: {id: string} }) {
-    const id = params.id
+export default function Movie({ params } : { params: {id: string} }): ReactElement {
+    const id: string = params.id
 
     // remplacer any par Movie apres je pense
-    const [movie, setMovie] = useState<any>(null)
+    const [movie, setMovie] = useState<MovieInterface | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         async function fetchData() {
-            const res = await fetch(`/api/movie/${id}`)
+            const res: Response = await fetch(`/api/movie/${id}`)
             const result = await res.json()
             setMovie(result)
             setLoading(false)
@@ -35,10 +30,10 @@ export default function Movie({ params } : { params: {id: string} }) {
             })
     }, [id]);
 
-    if (loading) return <p>Loading...</p>
+    if (loading) return <Loader />
     if (error) return <p>{error}</p>
 
-    if (movie.success == false) {
+    if (movie == null) {
         return (
             <div>
                 <p>Aucun film avec cet id</p>

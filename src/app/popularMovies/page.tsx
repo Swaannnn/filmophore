@@ -1,8 +1,9 @@
 'use client'
 
-import {ReactElement, useEffect, useState} from "react";
-import MovieCard from "@/components/MovieCard/MovieCard";
-import {Movie} from "@/models/model";
+import {ReactElement, useEffect, useState} from "react"
+import MovieCard from "@/components/MovieCard"
+import {MovieCardInterface} from "@/models/model"
+import Loader from "@/components/Loader/Loader"
 
 export default function PopularMovies(): ReactElement {
     const [movies, setMovies] = useState<any>(null)
@@ -24,17 +25,17 @@ export default function PopularMovies(): ReactElement {
             .catch(err => {
                 setError(err.message)
             })
-    }, []);
+    }, [])
 
-    if (loading) return <p>Loading...</p>
+    if (loading) return <Loader />
     if (error) return <p>{error}</p>
 
     return (
-        <div>
-            <h1>Films populaires</h1>
+        <div className="flex flex-col justify-center items-center max-w-full">
+            <h1 className="text-[4em]">Films populaires</h1>
             <div>
                 {movies.length > 0 ? (
-                    movies.map((movie: Movie) => (
+                    movies.map((movie: MovieCardInterface) => (
                         <MovieCard key={movie.id} movie={movie} />
                     ))
                 ) : (
@@ -42,5 +43,5 @@ export default function PopularMovies(): ReactElement {
                 )}
             </div>
         </div>
-    );
+    )
 }
