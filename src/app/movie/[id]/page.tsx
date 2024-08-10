@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactElement, useEffect, useState } from "react"
-import MovieCardDetails from "@/components/MovieCardDetails"
+import MovieCardDetails from "@/components/MovieCardDetails/MovieCardDetails"
 import Loader from "@/components/Loader/Loader"
 import { MovieInterface } from "@/models/model"
 

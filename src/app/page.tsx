@@ -1,6 +1,5 @@
 import {ReactElement} from "react"
-import PrimaryButton from "@/components/PrimaryButton"
-import SecondaryButton from "@/components/SecondaryButton"
+import {Button} from "@/components/Button";
 
 export default function Home(): ReactElement {
   return (
@@ -13,9 +12,9 @@ export default function Home(): ReactElement {
                   inscrit toi pour ajouter des favoris ou noter des films
               </p>
               <div className="flex gap-4 items-center">
-                  <PrimaryButton url="/login">Se connecter &#8594;</PrimaryButton>
+                  <Button url="/login" variant="primary">Se connecter &#8594;</Button>
                   <p>ou</p>
-                  <SecondaryButton url="/register">S&apos;inscrire &#8594;</SecondaryButton>
+                  <Button url="/register" variant="secondary">S&apos;inscrire &#8594;</Button>
               </div>
           </div>
       </div>
