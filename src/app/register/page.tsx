@@ -96,7 +96,7 @@ export default function Register() {
                         <input
                             type="text"
                             name="username"
-                            placeholder="John Doe"
+                            placeholder="johndoe42"
                             onChange={handleChange}
                             required
                             className={`${inputStyles} ${usernameError ? "border-red-500" : "border-gray-300"}`}

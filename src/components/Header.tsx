@@ -15,9 +15,9 @@ export default function Header(): ReactElement {
 
     useEffect(() => {
         if (status === "authenticated") {
-            setLastStateText("Compte");
+            setLastStateText("Mon compte");
             setLastStateLink("/account");
-            localStorage.setItem("lastStateText", "Compte");
+            localStorage.setItem("lastStateText", "Mon compte");
             localStorage.setItem("lastStateLink", "/account");
         } else if (status === "unauthenticated") {
             setLastStateText("Se connecter");

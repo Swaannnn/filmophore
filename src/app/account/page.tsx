@@ -4,6 +4,7 @@ import {signOut, useSession} from "next-auth/react";
 import Image from "next/image";
 import Loader from "@/components/Loader/Loader";
 import {Button} from "@/components/Button";
+import Unconnect from "@/components/Unconnect";
 
 export default function Account() {
     const { data: session, status } = useSession();
@@ -15,9 +16,7 @@ export default function Account() {
 
     if (!session) {
         return (
-            <div>
-                <h1>Vous devez être connecté pour accéder à cette page.</h1>
-            </div>
+            <Unconnect />
         );
     }
 
