@@ -25,21 +25,23 @@ export const handler = NextAuth({
                 const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) return null;
 
-                return user;
+                return { ...user, username: user.username };
             },
         }),
     ],
     session: { strategy: "jwt" },
     callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.username = user.username;
+            }
+            return token;
+        },
         async session({ session, token }) {
-            if (session.user?.email) {
-                const user = await prisma.user.findUnique({
-                    where: { email: session.user.email },
-                });
-
-                if (user) {
-                    session.user.username = user.username;
-                }
+            if (session.user) {
+                session.user.id = token.id as string;
+                session.user.username = token.username as string;
             }
             return session;
         },

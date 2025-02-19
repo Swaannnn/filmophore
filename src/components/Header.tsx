@@ -7,23 +7,16 @@ export default function Header(): ReactElement {
     const {data: session, status} = useSession();
     const router = useRouter();
 
-    const storedText = localStorage.getItem("lastStateText");
-    const storedLink = localStorage.getItem("lastStateLink");
-
-    const [lastStateText, setLastStateText] = useState(storedText);
-    const [lastStateLink, setLastStateLink] = useState(storedLink);
+    const [lastStateText, setLastStateText] = useState("Se connecter");
+    const [lastStateLink, setLastStateLink] = useState("/login");
 
     useEffect(() => {
         if (status === "authenticated") {
             setLastStateText("Mon compte");
             setLastStateLink("/account");
-            localStorage.setItem("lastStateText", "Mon compte");
-            localStorage.setItem("lastStateLink", "/account");
         } else if (status === "unauthenticated") {
             setLastStateText("Se connecter");
             setLastStateLink("/login");
-            localStorage.setItem("lastStateText", "Se connecter");
-            localStorage.setItem("lastStateLink", "/login");
         }
     }, [status]);
 
