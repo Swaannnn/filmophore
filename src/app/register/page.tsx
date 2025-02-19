@@ -5,6 +5,7 @@ import Image from "next/image";
 import {Button} from "@/components/Button";
 import {router} from "next/client";
 import {useRouter} from "next/navigation";
+import {signIn} from "next-auth/react";
 
 export default function Register() {
     const router = useRouter();
@@ -74,14 +75,26 @@ export default function Register() {
             body: JSON.stringify(form),
         });
 
-        if (!res.ok) {
+        if (res.ok) {
+            const signInResponse = await signIn("credentials", {
+                redirect: false,
+                email: form.email,
+                password: form.password,
+            });
+
+            if (signInResponse?.error) {
+                setError("Problème de connexion");
+            } else {
+                router.push("/dashboard");
+            }
+        } else {
             const { message } = await res.json();
             setError(message);
             return;
         }
 
-        setSuccess("Inscription réussie ! Vous pouvez vous connecter.");
-        router.push("/account");
+        // setSuccess("Inscription réussie ! Vous pouvez vous connecter.");
+        // router.push("/account");
     };
 
     const inputStyles = "w-full p-2 border rounded-lg focus:outline-none text-black"

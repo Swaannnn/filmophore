@@ -33,7 +33,7 @@ export default function Login() {
         if (res?.error) {
             setError("Adresse email ou mot de passe incorrect.");
         } else {
-            router.push("/account");
+            router.push("/dashboard");
         }
     };
 
