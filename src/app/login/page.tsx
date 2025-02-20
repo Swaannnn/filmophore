@@ -84,7 +84,11 @@ export default function Login() {
                 {error && <p className="text-red-500 text-center mt-3">{error}</p>}
                 <p className="text-center text-gray-600 mt-4">
                     Pas de compte ?
-                    <a onClick={() => router.push("/register")} className="text-[#157c9c] hover:underline ml-1 hover:cursor-pointer">S&apos;inscrire</a>
+                    <Button
+                        variant={'outline'}
+                        url={'/register'}
+                        className="ml-1"
+                    >S&apos;inscrire</Button>
                 </p>
             </div>
         </div>

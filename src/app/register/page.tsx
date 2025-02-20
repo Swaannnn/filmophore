@@ -179,7 +179,11 @@ export default function Register() {
                 {success && <p className="text-green-500 text-center mt-3">{success}</p>}
                 <p className="text-center text-gray-600 mt-4">
                     Déjà un compte ?
-                    <a onClick={() => router.push("/login")} className="text-[#157c9c] hover:underline ml-1 hover:cursor-pointer">Se connecter</a>
+                    <Button
+                        variant={'outline'}
+                        url={'/login'}
+                        className="ml-1"
+                    >Se connecter</Button>
                 </p>
             </div>
         </div>

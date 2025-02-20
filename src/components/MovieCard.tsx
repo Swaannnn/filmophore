@@ -52,7 +52,10 @@ export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps
                     <p className="line-clamp-[5]">{movie.overview}</p>
                     <br />
                     {status === "authenticated" && !hideAddMovie && (
-                        <a className="text-[#157c9c] cursor-pointer hover:underline" onClick={() => setShowAddMovie(true)}>Ajouter à une liste</a>
+                        <Button
+                            variant={'outline'}
+                            onClick={() => setShowAddMovie(true)}
+                        >Ajouter à une liste</Button>
                     )}
                 </div>
             </div>
@@ -70,9 +73,11 @@ export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps
                             ))}
                         </ul>
                         <div className="flex justify-center">
-                            <a onClick={() => setShowAddMovie(false)}
-                               className={"text-center text-[#157c9c] mt-4 cursor-pointer hover:underline"}
-                            >Annuler</a>
+                            <Button
+                                variant={'outline'}
+                                className="mt-4"
+                                onClick={() => setShowAddMovie(false)}
+                            >Annuler</Button>
                         </div>
                     </div>
                 </div>
