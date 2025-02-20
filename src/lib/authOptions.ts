@@ -40,6 +40,7 @@ export const authOptions: NextAuthOptions = {
                 token.id = user.id;
                 token.username = user.username;
                 token.movieListsId = user.movieListsId;
+                token.image = user.image;
             }
             return token;
         },
@@ -53,6 +54,7 @@ export const authOptions: NextAuthOptions = {
                     session.user.id = updatedUser.id;
                     session.user.username = updatedUser.username;
                     session.user.movieListsId = updatedUser.movieLists.map(list => list.id);
+                    session.user.image = updatedUser.image;
                 }
             }
             return session;

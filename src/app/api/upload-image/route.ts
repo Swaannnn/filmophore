@@ -25,9 +25,6 @@ export async function POST(req: Request) {
 
         const imageUrl = `/uploads/${file.name}`;
 
-        // 🔍 Ajoute un log pour voir les données envoyées à Prisma
-        console.log("Mise à jour de l'utilisateur :", { userId, imageUrl });
-
         await prisma.user.update({
             where: { id: userId },
             data: { image: imageUrl },

@@ -8,7 +8,6 @@ import {Button} from "@/components/Button";
 import MovieListCard from "@/components/MovieCardDetails/MovieListCard";
 import {useAuth} from "@/context/AuthContext";
 import {useRouter} from "next/navigation";
-import {signIn} from "next-auth/react";
 
 export default function Dashboard() {
     const { user, status } = useAuth();
