@@ -14,7 +14,7 @@ export default function Header(): ReactElement {
             </div>
             <div className="space-x-6">
                 <a onClick={() => router.push("/popularMovies")} className="hover:text-white-secondary hover:cursor-pointer">Films populaires</a>
-                <a onClick={() => router.push("/upcomingMovies")} className="hover:text-white-secondary hover:cursor-pointer">films à venir</a>
+                <a onClick={() => router.push("/upcomingMovies")} className="hover:text-white-secondary hover:cursor-pointer">Films à venir</a>
                 {/*<a onClick={() => router.push("/")} className="hover:text-white-secondary hover:cursor-pointer">Page 3</a>*/}
             </div>
             <div>

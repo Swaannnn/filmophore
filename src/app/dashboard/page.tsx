@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MovieList} from "@/types/types";
 import Loader from "@/components/Loader/Loader";
 import Unconnect from "@/components/Unconnect";
@@ -18,6 +18,7 @@ export default function Dashboard() {
     const [addList, setAddList] = useState(false);
     const [movieName, setMovieName] = useState("");
     const [movieDescription, setMovieDescription] = useState("");
+    const [errorName, setErrorName] = useState(false);
 
     useEffect(() => {
         async function fetchMovieLists() {
@@ -63,7 +64,16 @@ export default function Dashboard() {
         return newList;
     }
 
+    const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setErrorName(false);
+        setMovieName(event.target.value)
+    }
+
     const handleAddList = async () => {
+        if (movieName === "") {
+            setErrorName(true);
+            return;
+        }
         if (user) {
             await createList(user.id, movieName, movieDescription);
         }
@@ -80,24 +90,51 @@ export default function Dashboard() {
             <div className="flex flex-col items-center justify-center gap-8">
                 {user && (
                     <div>
-                        <p>salut {user.username}</p>
-
+                        <h1 className="text-3xl text-center pt-4 pb-6">Mes listes de films :</h1>
                         {movieLists && movieLists.map((movieList: MovieList) => (
                             <div key={movieList.id}>
                                 <MovieListCard id={movieList.id} name={movieList.name} description={movieList.description} />
+                                <div className="h-4"></div>
                             </div>
                         ))}
 
-                        <p>-------</p>
-                        <Button variant={'primary'} onClick={() => setAddList(true)}>Créer une nouvelle liste</Button>
+                        <div className="text-center">
+                            <Button variant={'primary'} onClick={() => setAddList(true)}>Créer une nouvelle liste</Button>
+                        </div>
 
                         {addList && (
-                            <div>
-                                <input type="text" placeholder="Nom de la liste" value={movieName} onChange={(event) => setMovieName(event.target.value)} />
-                                <input type="text" placeholder="Description de la liste" value={movieDescription} onChange={(event) => setMovieDescription(event.target.value)} />
-                                <Button variant={'primary'} onClick={handleAddList}>Créer</Button>
+                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96">
+                                    <h2 className="text-xl font-semibold mb-4 text-center">Créer une nouvelle liste</h2>
+
+                                    <p className="mb-2">Nom de la liste</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Ma sélection incontournable"
+                                        value={movieName}
+                                        onChange={handleChangeName}
+                                        className={`w-full p-2 bg-gray-800 rounded border border-gray-700 focus:outline-none ${errorName ? 'border-red-500' : ''}`}
+                                    />
+                                    {errorName && (
+                                        <p className="text-red-500 text-sm">Le nom de la liste est obligatoire</p>
+                                    )}
+
+                                    <p className="mt-3 mb-2">Description de la liste</p>
+                                    <textarea
+                                        placeholder="Une collection de films à ne pas manquer"
+                                        value={movieDescription}
+                                        onChange={(event) => setMovieDescription(event.target.value)}
+                                        className="w-full p-2 mb-3 bg-gray-800 rounded border border-gray-700 focus:outline-none resize-none h-24"
+                                    />
+
+                                    <div className="flex justify-between mt-4">
+                                        <Button variant="primary" onClick={() => setAddList(false)}>Annuler</Button>
+                                        <Button variant="secondary" onClick={handleAddList}>Créer</Button>
+                                    </div>
+                                </div>
                             </div>
                         )}
+
                     </div>
                 )}
             </div>
