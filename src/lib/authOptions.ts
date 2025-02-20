@@ -1,6 +1,6 @@
-import {NextAuthOptions} from "next-auth";
-import {PrismaAdapter} from "@next-auth/prisma-adapter";
-import {prisma} from "@/lib/prisma";
+import { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
@@ -44,10 +44,16 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.username = token.username as string;
-                session.user.movieListsId = token.movieListsId as string[];
+            if (session.user && token.id) {
+                const updatedUser = await prisma.user.findUnique({
+                    where: { id: token.id as string },
+                    include: { movieLists: { select: { id: true } } },
+                });
+                if (updatedUser) {
+                    session.user.id = updatedUser.id;
+                    session.user.username = updatedUser.username;
+                    session.user.movieListsId = updatedUser.movieLists.map(list => list.id);
+                }
             }
             return session;
         },

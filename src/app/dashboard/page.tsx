@@ -59,9 +59,6 @@ export default function Dashboard() {
         }
 
         const newList = await response.json();
-
-        router.refresh();
-
         console.log("MovieListCard ajoutée :", newList);
         return newList;
     }
@@ -70,7 +67,8 @@ export default function Dashboard() {
         if (user) {
             await createList(user.id, movieName, movieDescription);
         }
-        setAddList(false) // ajouter pop up si error
+        setAddList(false)
+        window.location.reload(); // à voir si on peut faire mieux ici
     }
 
     if (status === "loading") return <Loader />;
