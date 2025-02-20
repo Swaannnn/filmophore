@@ -84,3 +84,63 @@ export async function PATCH(req: NextRequest) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+export async function PUT(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { listId, name, description } = body;
+
+        if (!listId || !name) {
+            return NextResponse.json({ error: "List ID and name are required" }, { status: 400 });
+        }
+
+        const movieList = await prisma.movieList.findUnique({
+            where: { id: listId },
+        });
+
+        if (!movieList) {
+            return NextResponse.json({ error: "Movie list not found" }, { status: 404 });
+        }
+
+        const updatedMovieList = await prisma.movieList.update({
+            where: { id: listId },
+            data: {
+                name,
+                description: description || null,
+            },
+        });
+
+        return NextResponse.json(updatedMovieList, { status: 200 });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const listId = searchParams.get("id");
+
+        if (!listId) {
+            return NextResponse.json({ error: "ID is required" }, { status: 400 });
+        }
+
+        const movieList = await prisma.movieList.findUnique({
+            where: { id: listId },
+        });
+
+        if (!movieList) {
+            return NextResponse.json({ error: "Movie list not found" }, { status: 404 });
+        }
+
+        await prisma.movieList.delete({
+            where: { id: listId },
+        });
+
+        return NextResponse.json({ message: "Movie list deleted successfully" }, { status: 200 });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
