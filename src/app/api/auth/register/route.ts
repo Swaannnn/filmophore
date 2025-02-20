@@ -23,8 +23,21 @@ export async function POST(req: Request) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await prisma.user.create({
-            data: { username, email, password: hashedPassword },
+        const user = await prisma.user.create({
+            data: {
+                username,
+                email,
+                password: hashedPassword,
+            },
+        });
+
+        await prisma.movieList.create({
+            data: {
+                userId: user.id,
+                name: "Favoris",
+                description: "Mes films favoris",
+                moviesId: [],
+            },
         });
 
         return NextResponse.json({ message: "Compte créé avec succès" }, { status: 201 });

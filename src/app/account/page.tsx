@@ -1,14 +1,15 @@
 "use client";
 
-import {signOut, useSession} from "next-auth/react";
+import {signOut} from "next-auth/react";
 import Image from "next/image";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/Button";
 import Unconnect from "@/components/Unconnect";
 import React, { useState } from "react";
+import {useAuth} from "@/context/AuthContext";
 
 export default function Account() {
-    const { data: session, status, update} = useSession();
+    const { user, status } = useAuth();
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
@@ -16,7 +17,7 @@ export default function Account() {
 
     if (status === "loading") return <Loader />;
     if (status === "unauthenticated") return <Unconnect />
-    if (session === null) return <Unconnect />;
+    if (!user) return <Unconnect />;
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setModifying(true);
@@ -28,11 +29,11 @@ export default function Account() {
     };
 
     const uploadImage = async () => {
-        if (!selectedFile || !session?.user?.id) return;
+        if (!selectedFile || !user?.id) return;
 
         const formData = new FormData();
         formData.append("file", selectedFile);
-        formData.append("userId", session.user.id);
+        formData.append("userId", user.id);
 
         const response = await fetch("/api/upload-image", {
             method: "POST",
@@ -40,8 +41,8 @@ export default function Account() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            await update({ image: data.imageUrl });
+            // const data = await response.json();
+            // await update({ image: data.imageUrl });
             setModifying(false);
         } else {
             console.error("Erreur lors de l'upload :", await response.text());
@@ -54,10 +55,10 @@ export default function Account() {
 
             <div className="bg-gray-950 p-6 rounded-lg shadow-lg w-full max-w-md">
                 <div className="flex flex-col items-center mt-6">
-                    {preview || session.user?.image ? (
+                    {preview || user?.image ? (
                         <div className="relative w-32 h-32">
                             <Image
-                                src={preview ?? session.user?.image ?? "/default-avatar.png"}
+                                src={preview ?? user?.image ?? "/default-avatar.png"}
                                 alt="Photo de profil"
                                 sizes="auto"
                                 fill
@@ -105,11 +106,16 @@ export default function Account() {
                     <tbody>
                     <tr className="border-b border-gray-700">
                         <td className="py-2 font-semibold">Nom d&apos;utilisateur :</td>
-                        <td className="py-2">{session.user?.username}</td>
+                        <td className="py-2">{user?.username}</td>
                     </tr>
                     <tr className="border-b border-gray-700">
                         <td className="py-2 font-semibold">Email :</td>
-                        <td className="py-2">{session.user?.email}</td>
+                        <td className="py-2">{user?.email}</td>
+                    </tr>
+
+                    <tr>
+                        <td>nombre de listes :</td>
+                        <td>{user.movieListsId.length}</td>
                     </tr>
                     {/*<tr className="border-b border-gray-700">*/}
                     {/*    <td className="py-2 font-semibold">Nom :</td>*/}

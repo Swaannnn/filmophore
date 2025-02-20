@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
+                    include: { movieLists: { select: { id: true } } },
                 });
 
                 if (!user) return null;
@@ -25,7 +26,10 @@ export const authOptions: NextAuthOptions = {
                 const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) return null;
 
-                return { ...user, username: user.username };
+                return {
+                    ...user,
+                    movieListsId: user.movieLists.map(list => list.id),
+                };
             },
         }),
     ],
@@ -35,6 +39,7 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.username = user.username;
+                token.movieListsId = user.movieListsId;
             }
             return token;
         },
@@ -42,6 +47,7 @@ export const authOptions: NextAuthOptions = {
             if (session.user) {
                 session.user.id = token.id as string;
                 session.user.username = token.username as string;
+                session.user.movieListsId = token.movieListsId as string[];
             }
             return session;
         },

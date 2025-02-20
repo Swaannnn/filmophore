@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "MovieList" (
+CREATE TABLE "MovieListCard" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
@@ -12,4 +12,4 @@ CREATE TABLE "MovieList" (
 );
 
 -- AddForeignKey
-ALTER TABLE "MovieList" ADD CONSTRAINT "MovieList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MovieListCard" ADD CONSTRAINT "MovieList_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
