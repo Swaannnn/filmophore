@@ -98,7 +98,7 @@ export default function Dashboard() {
                             </div>
                         ))}
 
-                        <div className="text-center">
+                        <div className="text-center mb-4">
                             <Button variant={'primary'} onClick={() => setAddList(true)}>Créer une nouvelle liste</Button>
                         </div>
 

@@ -48,3 +48,39 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+export async function PATCH(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { listId, movieId } = body;
+
+        if (!listId || !movieId) {
+            return NextResponse.json({ error: "List ID and Movie ID are required" }, { status: 400 });
+        }
+
+        const movieList = await prisma.movieList.findUnique({
+            where: { id: listId },
+            select: { moviesId: true },
+        });
+
+        if (!movieList) {
+            return NextResponse.json({ error: "Movie list not found" }, { status: 404 });
+        }
+
+        if (movieList.moviesId.includes(movieId.toString())) {
+            return NextResponse.json({ message: "Movie already in the list" }, { status: 200 });
+        }
+
+        const updatedMovieList = await prisma.movieList.update({
+            where: { id: listId },
+            data: {
+                moviesId: { push: movieId.toString() },
+            },
+        });
+
+        return NextResponse.json(updatedMovieList, { status: 200 });
+    } catch (error) {
+        console.error(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

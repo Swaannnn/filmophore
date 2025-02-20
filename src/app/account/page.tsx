@@ -70,7 +70,7 @@ export default function Account() {
                             />
                         </div>
                     ) : (
-                        <div className="w-24 h-24 rounded-full bg-gray-600 flex items-center justify-center">
+                        <div className="w-32 h-32 rounded-full bg-gray-600 flex items-center justify-center">
                             <span className="text-gray-400">Aucune photo</span>
                         </div>
                     )}
@@ -111,11 +111,6 @@ export default function Account() {
                     <tr className="border-b border-gray-700">
                         <td className="py-2 font-semibold">Email :</td>
                         <td className="py-2">{user?.email}</td>
-                    </tr>
-
-                    <tr>
-                        <td>nombre de listes :</td>
-                        <td>{user.movieListsId.length}</td>
                     </tr>
                     {/*<tr className="border-b border-gray-700">*/}
                     {/*    <td className="py-2 font-semibold">Nom :</td>*/}
