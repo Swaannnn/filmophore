@@ -16,7 +16,7 @@ export default function SearchBar(): ReactElement {
             <form onSubmit={searchMovie}>
                 <input
                     className="outline-0 text-black"
-                    type="text" placeholder="Search a movie"
+                    type="text" placeholder="Rechercher un film"
                     value={query}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
 

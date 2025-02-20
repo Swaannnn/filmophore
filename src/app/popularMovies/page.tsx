@@ -27,21 +27,24 @@ export default function PopularMovies(): ReactElement {
             })
     }, [])
 
-    if (loading) return <Loader />
-    if (error) return <p>{error}</p>
-
     return (
         <div className="flex flex-col justify-center items-center max-w-full">
             <h1 className="text-[4em]">Films populaires</h1>
-            <div>
-                {movies.length > 0 ? (
-                    movies.map((movie: MovieCardInterface) => (
-                        <MovieCard key={movie.id} movie={movie} />
-                    ))
-                ) : (
-                    <p>Aucun film trouvé</p>
-                )}
-            </div>
+            {loading && (
+                <Loader />
+            )}
+            {error && <p>{error}</p>}
+            {!loading && !error && (
+                <div>
+                    {movies.length > 0 ? (
+                        movies.map((movie: MovieCardInterface) => (
+                            <MovieCard key={movie.id} movie={movie}/>
+                        ))
+                    ) : (
+                        <p>Aucun film trouvé</p>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
