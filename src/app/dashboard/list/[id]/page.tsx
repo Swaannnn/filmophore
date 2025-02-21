@@ -9,6 +9,7 @@ import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/Button";
 import AddEditList from "@/components/AddEditList";
 import {useRouter} from "next/navigation";
+import MovieCardList from "@/components/MovieCardDetails/MovieCardList";
 
 export default function List({ params }: { params: { id: string } }) {
     const id: string = params.id;
@@ -135,7 +136,7 @@ export default function List({ params }: { params: { id: string } }) {
                                 <div>
                                     {movies.length > 0 ? (
                                         movies.map((movie: MovieCardInterface) => (
-                                            <MovieCard key={movie.id} movie={movie} hideAddMovie={true}/>
+                                            <MovieCardList key={movie.id} listId={movieList.id} movie={movie}/>
                                         ))
                                     ) : (
                                         <p className="text-gray-300 text-center mt-4">Aucun film dans cette liste</p>
