@@ -16,12 +16,16 @@ export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps
     const router = useRouter();
     const {user, status, movieLists} = useAuth();
     const [showAddMovie, setShowAddMovie] = useState(false);
+    const [duplicateMovie, setDuplicateMovie] = useState(false);
+    const [successAddMovie, setSuccessAddMovie] = useState(false);
 
     const handleAddToList = async (listId: string) => {
         try {
             const response = await addMovieToList(listId, movie.id);
-            if (response) {
-                console.log("Film ajouté avec succès !");
+            if (response.message === "Movie already in the list") {
+                setDuplicateMovie(true);
+            } else {
+                setSuccessAddMovie(true);
             }
             setShowAddMovie(false);
         } catch (error) {
@@ -78,6 +82,38 @@ export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps
                                 className="mt-4"
                                 onClick={() => setShowAddMovie(false)}
                             >Annuler</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {duplicateMovie && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-4 rounded-lg w-80">
+                        <h3 className="text-lg font-bold text-center border-b-2 mb-2 pb-2">Impossible d&apos;ajouter ce film</h3>
+                        <h3 className="text-md text-center"><b>{movie.title}</b> est déjà présent dans cette liste.</h3>
+                        <div className="flex justify-center">
+                            <Button
+                                variant={'outline'}
+                                className="mt-4"
+                                onClick={() => setDuplicateMovie(false)}
+                            >OK</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {successAddMovie && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-4 rounded-lg w-80">
+                        <h3 className="text-lg font-bold text-center border-b-2 mb-2 pb-2">Film ajouté avec succès !</h3>
+                        <h3 className="text-md text-center"><b>{movie.title}</b> à bien été ajouté à votre liste.</h3>
+                        <div className="flex justify-center">
+                            <Button
+                                variant={'outline'}
+                                className="mt-4"
+                                onClick={() => setSuccessAddMovie(false)}
+                            >OK</Button>
                         </div>
                     </div>
                 </div>

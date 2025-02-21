@@ -120,20 +120,22 @@ export default function List({ params }: { params: { id: string } }) {
                                     <p className="text-3xl">{movieList.name}</p>
                                     <p className="text-2xl">{movieList.description}</p>
                                 </div>
-                                <div className="flex justify-center gap-2">
-                                    <Button
-                                        variant={'outline'}
-                                        onClick={() => setEditList(true)}
-                                    >Modifier</Button>
-                                    <Button
-                                        variant={'outline'}
-                                        onClick={() => setDeleteList(true)}
-                                    >Supprimer</Button>
-                                </div>
+                                {movieList.name !== "Favoris" && (
+                                    <div className="flex justify-center gap-2">
+                                        <Button
+                                            variant={'outline'}
+                                            onClick={() => setEditList(true)}
+                                        >Modifier</Button>
+                                        <Button
+                                            variant={'outline'}
+                                            onClick={() => setDeleteList(true)}
+                                        >Supprimer</Button>
+                                    </div>
+                                )}
                                 <div>
                                     {movies.length > 0 ? (
                                         movies.map((movie: MovieCardInterface) => (
-                                            <MovieCard key={movie.id} movie={movie} hideAddMovie={true} />
+                                            <MovieCard key={movie.id} movie={movie} hideAddMovie={true}/>
                                         ))
                                     ) : (
                                         <p className="text-gray-300 text-center mt-4">Aucun film dans cette liste</p>

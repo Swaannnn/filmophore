@@ -8,7 +8,6 @@
 - [ ] Pagination dans la recherche
 - [ ] Dark / light mode
 - [ ] Multilingue (Fr / En)
-- [ ] modifier le style bouton outline - modifier tous les < a > en boutons outline
 
 ## ✅ Terminé
 - [x] PopularMovies + UpcomingMovies
@@ -21,3 +20,4 @@
 - [x] formulaire connexion / inscription
 - [x] création bd
 - [x] voir pour la page d'accueil (quand pas connecté / connecté, ajouter une page welcome ? (actuelle page accueil) si connecté rediriger vers page avec filùs / listes etc de l'utilisateur)
+- [x] modifier le style bouton outline - modifier tous les < a > en boutons outline
