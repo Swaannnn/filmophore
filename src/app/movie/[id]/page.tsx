@@ -1,50 +1,43 @@
 'use client'
 
-import { ReactElement, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import MovieCardDetails from "@/components/MovieCardDetails/MovieCardDetails"
 import Loader from "@/components/Loader/Loader"
 import { MovieInterface } from "@/models/model"
+import { fetchMovieById } from "@/services/movieService"
 
-export default function Movie({ params } : { params: {id: string} }): ReactElement {
+export default function Movie({ params }: { params: { id: string } }) {
     const id: string = params.id
 
-    // remplacer any par Movie apres je pense
     const [movie, setMovie] = useState<MovieInterface | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        async function fetchData() {
-            const res: Response = await fetch(`/api/movie/${id}`)
-            const result = await res.json()
-            setMovie(result)
-            setLoading(false)
+        async function getMovie() {
+            setLoading(true);
+            const result = await fetchMovieById(id);
+            if (result) {
+                setMovie(result);
+            } else {
+                setError("Aucun film trouvé.");
+            }
+            setLoading(false);
         }
 
-        fetchData()
-            .then((): void => {
-                console.log('fetch completed')
-            })
-            .catch(err => {
-                setError(err.message)
-            })
+        getMovie();
     }, [id]);
 
-    if (loading) return <Loader />
-    if (error) return <p>{error}</p>
-
-    if (movie == null) {
-        return (
-            <div>
-                <p>Aucun film avec cet id</p>
-            </div>
-        //     a refaire mieux ici là
-        )
-    }
+    if (loading) return <Loader />;
+    if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <div>
-            <MovieCardDetails key={movie.id} movie={movie}></MovieCardDetails>
+        <div className="flex justify-center p-6">
+            {movie ? (
+                <MovieCardDetails key={movie.id} movie={movie} />
+            ) : (
+                <p className="text-gray-500">Aucun film trouvé avec cet ID.</p>
+            )}
         </div>
-    )
+    );
 }

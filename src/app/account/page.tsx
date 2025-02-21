@@ -8,6 +8,7 @@ import Unconnect from "@/components/Unconnect";
 import React, { useState } from "react";
 import {useAuth} from "@/context/AuthContext";
 import ProfileImage from "@/components/ProfileImage";
+import {updateImage} from "@/services/userService";
 
 export default function Account() {
     const { user, status } = useAuth();
@@ -53,23 +54,7 @@ export default function Account() {
         }
 
         if (user) {
-            const response = await fetch(`/api/update-image`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userId: user.id,
-                    image: images[activeImage],
-                }),
-            });
-
-            if (response.ok) {
-                console.log('Image de profil modifiée avec succès');
-                window.location.reload();
-            } else {
-                console.error('Erreur lors de la modification de l\'image de profile');
-            }
+            await updateImage(user.id, images, activeImage);
         }
 
         setPopUpChangeImage(false);

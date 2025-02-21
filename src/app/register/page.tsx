@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import {Button} from "@/components/Button";
-import {router} from "next/client";
-import {useRouter} from "next/navigation";
-import {signIn} from "next-auth/react";
+import { Button } from "@/components/Button";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { registerUser } from "@/services/userService";
 
 export default function Register() {
     const router = useRouter();
@@ -69,13 +69,9 @@ export default function Register() {
             return;
         }
 
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
+        try {
+            await registerUser(form);
 
-        if (res.ok) {
             const signInResponse = await signIn("credentials", {
                 redirect: false,
                 email: form.email,
@@ -87,14 +83,9 @@ export default function Register() {
             } else {
                 router.push("/dashboard");
             }
-        } else {
-            const { message } = await res.json();
-            setError(message);
-            return;
+        } catch (err) {
+            setError((err as Error).message || "Une erreur est survenue");
         }
-
-        // setSuccess("Inscription réussie ! Vous pouvez vous connecter.");
-        // router.push("/account");
     };
 
     const inputStyles = "w-full p-2 border rounded-lg focus:outline-none text-black"
@@ -142,8 +133,10 @@ export default function Register() {
                             />
                             <button type="button" className="absolute inset-y-0 right-3 flex items-center"
                                     onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <Image src={'/assets/oeil.png'} alt={'oeil'} width={20} height={20}/> :
-                                    <Image src={'/assets/cacher.png'} alt={'oeil'} width={20} height={20}/>}
+                                {showPassword ?
+                                    <Image src={'/assets/oeil.png'} alt={'oeil'} width={20} height={20}/> :
+                                    <Image src={'/assets/cacher.png'} alt={'oeil'} width={20} height={20}/>
+                                }
                             </button>
                         </div>
                     </div>
@@ -163,7 +156,8 @@ export default function Register() {
                                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                                 {showConfirmPassword ?
                                     <Image src={'/assets/oeil.png'} alt={'oeil'} width={20} height={20}/> :
-                                    <Image src={'/assets/cacher.png'} alt={'oeil'} width={20} height={20}/>}
+                                    <Image src={'/assets/cacher.png'} alt={'oeil'} width={20} height={20}/>
+                                }
                             </button>
                         </div>
                         {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
