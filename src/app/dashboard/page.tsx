@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { MovieList } from "@/types/types";
 import Loader from "@/components/Loader/Loader";
 import Unconnect from "@/components/Unconnect";
@@ -20,25 +20,25 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchMovieListsData = useCallback(async () => {
-        if (!user?.movieListsId || user.movieListsId.length === 0) {
-            setLoading(false);
-            return;
-        }
-        try {
-            setLoading(true);
-            const lists = await fetchMovieLists(user.movieListsId);
-            setMovieLists(lists);
-        } catch (err) {
-            setError("Erreur lors du chargement des listes.");
-        } finally {
-            setLoading(false);
-        }
-    }, [user]);
-
     useEffect(() => {
+        const fetchMovieListsData = async () => {
+            if (!user?.movieListsId || user.movieListsId.length === 0) {
+                setLoading(false);
+                return;
+            }
+            try {
+                setLoading(true);
+                const lists = await fetchMovieLists(user.movieListsId);
+                setMovieLists(lists);
+            } catch (err) {
+                setError("Erreur lors du chargement des listes.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchMovieListsData();
-    }, [fetchMovieListsData]);
+    }, [user]);
 
     const handleAddList = async () => {
         if (!movieName.trim()) {
@@ -50,7 +50,7 @@ export default function Dashboard() {
             setLoading(true);
             const newList = await createMovieList(user!.id, movieName, movieDescription);
             if (newList) {
-                setMovieLists((prev) => [newList, ...prev]);
+                window.location.reload();
             }
         } catch (err) {
             setError("Erreur lors de la création de la liste.");
