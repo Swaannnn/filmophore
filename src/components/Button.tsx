@@ -16,7 +16,7 @@ export function Button({ variant, className, url, children, ...props }: ButtonPr
     const variants = {
         primary: "bg-black border rounded-full px-8 py-2 transition transform duration-150 hover:bg-white hover:text-black hover:cursor-pointer",
         secondary: "bg-white text-black border rounded-full px-8 py-2 transition transform duration-150 hover:bg-black hover:text-white hover:cursor-pointer",
-        outline: "bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-500 hover:cursor-pointer"
+        outline: "text-[#157c9c] hover:underline hover:cursor-pointer"
     };
 
     const classes = clsx(variants[variant], className);

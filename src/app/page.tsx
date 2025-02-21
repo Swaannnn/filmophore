@@ -1,12 +1,12 @@
 "use client";
 
 import { ReactElement, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Loader from "@/components/Loader/Loader";
 import { useRouter } from "next/navigation";
+import {useAuth} from "@/context/AuthContext";
 
 export default function Home(): ReactElement {
-    const { data: session, status } = useSession();
+    const {user, status } = useAuth();
     const router = useRouter();
 
     useEffect(() => {

@@ -1,6 +1,6 @@
-import {NextAuthOptions} from "next-auth";
-import {PrismaAdapter} from "@next-auth/prisma-adapter";
-import {prisma} from "@/lib/prisma";
+import { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
@@ -18,6 +18,7 @@ export const authOptions: NextAuthOptions = {
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
+                    include: { movieLists: { select: { id: true } } },
                 });
 
                 if (!user) return null;
@@ -25,7 +26,10 @@ export const authOptions: NextAuthOptions = {
                 const isValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isValid) return null;
 
-                return { ...user, username: user.username };
+                return {
+                    ...user,
+                    movieListsId: user.movieLists.map(list => list.id),
+                };
             },
         }),
     ],
@@ -35,13 +39,23 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id;
                 token.username = user.username;
+                token.movieListsId = user.movieListsId;
+                token.image = user.image;
             }
             return token;
         },
         async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.username = token.username as string;
+            if (session.user && token.id) {
+                const updatedUser = await prisma.user.findUnique({
+                    where: { id: token.id as string },
+                    include: { movieLists: { select: { id: true } } },
+                });
+                if (updatedUser) {
+                    session.user.id = updatedUser.id;
+                    session.user.username = updatedUser.username;
+                    session.user.movieListsId = updatedUser.movieLists.map(list => list.id);
+                    session.user.image = updatedUser.image;
+                }
             }
             return session;
         },
