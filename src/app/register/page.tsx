@@ -6,9 +6,11 @@ import { Button } from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { registerUser } from "@/services/userService";
+import {useAuth} from "@/context/AuthContext";
 
 export default function Register() {
     const router = useRouter();
+    const {user, status} = useAuth();
 
     const [form, setForm] = useState({
         username: "",
@@ -89,6 +91,8 @@ export default function Register() {
     };
 
     const inputStyles = "w-full p-2 border rounded-lg focus:outline-none text-black"
+
+    if (user || status === "authenticated") router.push("/account");
 
     return (
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">

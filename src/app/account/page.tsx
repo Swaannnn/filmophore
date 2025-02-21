@@ -20,8 +20,7 @@ export default function Account() {
     const [errorImage, setErrorImage] = useState(false);
 
     if (status === "loading") return <Loader />;
-    if (status === "unauthenticated") return <Unconnect />
-    if (!user) return <Unconnect />;
+    if (status === "unauthenticated" || !user) return <Unconnect />;
 
     const images = [
         "/assets/profile/jinx.png",

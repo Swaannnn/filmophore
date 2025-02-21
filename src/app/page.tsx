@@ -10,7 +10,7 @@ export default function Home(): ReactElement {
     const router = useRouter();
 
     useEffect(() => {
-        if (status === "authenticated") {
+        if (status === "authenticated" || user) {
             router.push("/dashboard");
         } else if (status === "unauthenticated") {
             router.push("/welcome");

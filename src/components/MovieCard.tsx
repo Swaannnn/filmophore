@@ -9,10 +9,9 @@ import {addMovieToList} from "@/services/movieService";
 
 interface MovieCardProps {
     movie: MovieCardInterface;
-    hideAddMovie?: boolean;
 }
 
-export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps): ReactElement{
+export default function MovieCard({movie} : MovieCardProps): ReactElement{
     const router = useRouter();
     const {user, status, movieLists} = useAuth();
     const [showAddMovie, setShowAddMovie] = useState(false);
@@ -55,7 +54,7 @@ export default function MovieCard({movie, hideAddMovie = false} : MovieCardProps
                     <br/>
                     <p className="line-clamp-[5]">{movie.overview}</p>
                     <br />
-                    {status === "authenticated" && !hideAddMovie && (
+                    {status === "authenticated" && (
                         <Button
                             variant={'outline'}
                             onClick={() => setShowAddMovie(true)}

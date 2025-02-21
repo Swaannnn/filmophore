@@ -5,8 +5,10 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import {Button} from "@/components/Button";
 import { useRouter } from "next/navigation";
+import {useAuth} from "@/context/AuthContext";
 
 export default function Login() {
+    const {user, status} = useAuth();
     const [form, setForm] = useState({
         email: "",
         password: ""
@@ -38,6 +40,8 @@ export default function Login() {
     };
 
     const inputStyles = "w-full p-2 border rounded-lg focus:outline-none text-black"
+
+    if (user || status === "authenticated") router.push("/account");
 
     return (
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">

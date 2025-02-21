@@ -1,9 +1,6 @@
-import { useRouter } from "next/navigation";
 import {Button} from "@/components/Button";
 
 export default function MovieListCard({ id, name, description }: { id: string; name: string; description?: string }) {
-    const router = useRouter();
-
     return (
         <div className="flex flex-col items-center justify-center bg-gray-950 rounded-lg p-4 w-[500px]">
             <p className="text-center break-words font-bold">{name}</p>
