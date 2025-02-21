@@ -21,7 +21,7 @@ export default function Header(): ReactElement {
                 <SearchBar/>
             </div>
             <div>
-                {status === "authenticated" ? (
+                {(status === "authenticated" || user) ? (
                     <a onClick={() => router.push("/account")}
                        className="hover:text-white-secondary hover:cursor-pointer">{"Mon compte"}</a>
                 ) : (

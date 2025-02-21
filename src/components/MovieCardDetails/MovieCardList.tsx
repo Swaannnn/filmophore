@@ -4,7 +4,6 @@ import React, { ReactElement, useState } from "react";
 import { MovieCardInterface } from "@/models/model";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/Button";
 import { deleteMovieFromList } from "@/services/listService";
 
@@ -15,7 +14,6 @@ interface MovieCardProps {
 
 export default function MovieCardList({ movie, listId }: MovieCardProps): ReactElement {
     const router = useRouter();
-    const { user, status, movieLists } = useAuth();
     const [popUpDelete, setPopUpDelete] = useState(false);
 
     const handleDelete = async () => {

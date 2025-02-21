@@ -3,13 +3,14 @@
 import { updateList, deleteList, fetchMovieList, fetchMovies } from "@/services/listService";
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/context/AuthContext";
-import {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import {MovieList} from "@/types/types";
 import {MovieCardInterface} from "@/models/model";
 import Loader from "@/components/Loader/Loader";
 import {Button} from "@/components/Button";
 import MovieCardList from "@/components/MovieCardDetails/MovieCardList";
 import AddEditList from "@/components/AddEditList";
+import Unconnect from "@/components/Unconnect";
 
 export default function List({ params }: { params: { id: string } }) {
     const id: string = params.id;
@@ -79,84 +80,89 @@ export default function List({ params }: { params: { id: string } }) {
     };
 
     if (loading) return <Loader />;
+    if (status === "unauthenticated" || !user) return <Unconnect />;
 
     return (
         <div className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center justify-center gap-8">
-                {user && (
+                {movieList ? (
                     <div>
-                        {movieList && (
-                            <div>
-                                <div className="flex flex-col justify-center text-center">
-                                    <p className="text-3xl">{movieList.name}</p>
-                                    <p className="text-2xl">{movieList.description}</p>
-                                </div>
-                                {movieList.name !== "Favoris" && (
-                                    <div className="flex justify-center gap-2">
-                                        <Button
-                                            variant={'outline'}
-                                            onClick={() => setEditList(true)}
-                                        >Modifier</Button>
-                                        <Button
-                                            variant={'outline'}
-                                            onClick={() => setDeleteListPopUp(true)}
-                                        >Supprimer</Button>
-                                    </div>
-                                )}
-                                <div>
-                                    {movies.length > 0 ? (
-                                        movies.map((movie: MovieCardInterface) => (
-                                            <MovieCardList key={movie.id} listId={movieList.id} movie={movie}/>
-                                        ))
-                                    ) : (
-                                        <p className="text-gray-300 text-center mt-4">Aucun film dans cette liste</p>
-                                    )}
-                                </div>
+                        <div className="flex flex-col justify-center text-center">
+                            <p className="text-3xl">{movieList.name}</p>
+                            <p className="text-2xl">{movieList.description}</p>
+                        </div>
+                        {movieList.name !== "Favoris" && (
+                            <div className="flex justify-center gap-2">
+                                <Button
+                                    variant={'outline'}
+                                    onClick={() => setEditList(true)}
+                                >Modifier</Button>
+                                <Button
+                                    variant={'outline'}
+                                    onClick={() => setDeleteListPopUp(true)}
+                                >Supprimer</Button>
                             </div>
                         )}
+                        <div>
+                            {movies.length > 0 ? (
+                                movies.map((movie: MovieCardInterface) => (
+                                    <MovieCardList key={movie.id} listId={movieList.id} movie={movie}/>
+                                ))
+                            ) : (
+                                <p className="text-gray-300 text-center mt-4">Aucun film dans cette liste</p>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="pt-4 text-center flex flex-col gap-4">
+                        <p>Aucune liste avec cet ID.</p>
+                        <Button
+                            variant={'primary'}
+                            url={'/dashboard'}
+                        >Retourner à vos listes</Button>
+                    </div>
+                )}
 
-                        {editList && (
-                            <AddEditList
-                                isNewList={false}
-                                movieName={movieName}
-                                setMovieName={setMovieName}
-                                movieDescription={movieDescription}
-                                setMovieDescription={setMovieDescription}
-                                errorName={errorName}
-                                setErrorName={setErrorName}
-                                handleAddList={handleEditList}
-                                setAddList={setEditList}
-                            />
-                        )}
+                {editList && (
+                    <AddEditList
+                        isNewList={false}
+                        movieName={movieName}
+                        setMovieName={setMovieName}
+                        movieDescription={movieDescription}
+                        setMovieDescription={setMovieDescription}
+                        errorName={errorName}
+                        setErrorName={setErrorName}
+                        handleAddList={handleEditList}
+                        setAddList={setEditList}
+                    />
+                )}
 
-                        {deleteListPopUp && (
-                            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96">
-                                    <h2 className="text-xl font-semibold mb-4 text-center">
-                                        Confirmation de suppression
-                                    </h2>
+                {deleteListPopUp && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-xl font-semibold mb-4 text-center">
+                                Confirmation de suppression
+                            </h2>
 
-                                    <p className="text-center mb-4">Êtes-vous sûr de vouloir supprimer cette liste ?</p>
+                            <p className="text-center mb-4">Êtes-vous sûr de vouloir supprimer cette liste ?</p>
 
-                                    <div className="flex justify-between gap-4">
-                                        <Button
-                                            variant="primary"
-                                            onClick={() => setDeleteListPopUp(false)}
-                                            className="w-full"
-                                        >
-                                            Annuler
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            onClick={handleDeleteList}
-                                            className="w-full"
-                                        >
-                                            Supprimer
-                                        </Button>
-                                    </div>
-                                </div>
+                            <div className="flex justify-between gap-4">
+                                <Button
+                                    variant="primary"
+                                    onClick={() => setDeleteListPopUp(false)}
+                                    className="w-full"
+                                >
+                                    Annuler
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    onClick={handleDeleteList}
+                                    className="w-full"
+                                >
+                                    Supprimer
+                                </Button>
                             </div>
-                        )}
+                        </div>
                     </div>
                 )}
             </div>
