@@ -1,9 +1,12 @@
+'use client';
+
 import React, { ReactElement, useState } from "react";
 import { MovieCardInterface } from "@/models/model";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/Button";
+import { deleteMovieFromList } from "@/services/listService";
 
 interface MovieCardProps {
     movie: MovieCardInterface;
@@ -16,28 +19,15 @@ export default function MovieCardList({ movie, listId }: MovieCardProps): ReactE
     const [popUpDelete, setPopUpDelete] = useState(false);
 
     const handleDelete = async () => {
-        try {
-            const response = await fetch(`/api/movie-list/${listId}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ movieId: movie.id }),
-            });
+        const result = await deleteMovieFromList(listId, movie.id.toString());
 
-            const data = await response.json();
-
-            if (response.ok) {
-                console.log("Film supprimé avec succès", data);
-                window.location.reload();
-            } else {
-                console.error("Erreur lors de la suppression:", data.error);
-            }
-        } catch (error) {
-            console.error("Erreur interne:", error);
+        if (result) {
+            console.log("Film supprimé avec succès", result);
+            window.location.reload();
+        } else {
+            console.error("Erreur lors de la suppression du film");
         }
-    };
-
+    }
 
     return (
         <div className="text-black">
@@ -64,6 +54,7 @@ export default function MovieCardList({ movie, listId }: MovieCardProps): ReactE
                     </Button>
                 </div>
             </div>
+
             {popUpDelete && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96">
@@ -93,5 +84,5 @@ export default function MovieCardList({ movie, listId }: MovieCardProps): ReactE
                 </div>
             )}
         </div>
-    );
+    )
 }

@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from "react";
-import { MovieList } from "@/types/types";
-import { useAuth } from "@/context/AuthContext";
-import { MovieCardInterface } from "@/models/model";
-import MovieCard from "@/components/MovieCard";
-import Loader from "@/components/Loader/Loader";
-import { Button } from "@/components/Button";
-import AddEditList from "@/components/AddEditList";
+import { updateList, deleteList, fetchMovieList, fetchMovies } from "@/services/listService";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/context/AuthContext";
+import {useEffect, useState, useCallback} from "react";
+import {MovieList} from "@/types/types";
+import {MovieCardInterface} from "@/models/model";
+import Loader from "@/components/Loader/Loader";
+import {Button} from "@/components/Button";
 import MovieCardList from "@/components/MovieCardDetails/MovieCardList";
+import AddEditList from "@/components/AddEditList";
 
 export default function List({ params }: { params: { id: string } }) {
     const id: string = params.id;
@@ -25,7 +25,30 @@ export default function List({ params }: { params: { id: string } }) {
     const [movieDescription, setMovieDescription] = useState("");
     const [errorName, setErrorName] = useState(false);
 
-    const [deleteList, setDeleteList] = useState(false);
+    const [deleteListPopUp, setDeleteListPopUp] = useState(false);
+
+    const fetchData = useCallback(async () => {
+        try {
+            setLoading(true);
+            const data = await fetchMovieList(id);
+            if (data) {
+                setMovieList(data);
+                setMovieName(data.name);
+                setMovieDescription(data.description);
+
+                const allMovies = await fetchMovies(data);
+                setMovies(allMovies);
+            }
+        } catch (err) {
+            console.error("Erreur lors de la récupération de la liste");
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const handleEditList = async () => {
         if (movieName === "") {
@@ -33,22 +56,9 @@ export default function List({ params }: { params: { id: string } }) {
             return;
         }
         if (user && movieList) {
-            const response = await fetch(`/api/movie-list?id=${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    listId: movieList.id,
-                    name: movieName,
-                    description: movieDescription,
-                }),
-            });
-
-            if (response.ok) {
-                const updatedList = await response.json();
+            const updatedList = await updateList(id, movieList.id, movieName, movieDescription);
+            if (updatedList) {
                 setMovieList(updatedList);
-                window.location.reload();
             } else {
                 console.error('Erreur lors de la modification de la liste');
             }
@@ -58,55 +68,15 @@ export default function List({ params }: { params: { id: string } }) {
 
     const handleDeleteList = async () => {
         if (user) {
-            const response = await fetch(`/api/movie-list?id=${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                console.log('Liste supprimée avec succès');
+            const res = await deleteList(id);
+            if (res) {
                 router.push('/dashboard');
             } else {
                 console.error('Erreur lors de la suppression de la liste');
             }
         }
-        setDeleteList(false);
+        setDeleteListPopUp(false);
     };
-
-    useEffect(() => {
-        async function fetchMovieList() {
-            const response = await fetch(`/api/movie-list?id=${id}`);
-            if (response.ok) {
-                const data = await response.json();
-                setMovieList(data);
-                setMovieName(data.name);
-                setMovieDescription(data.description);
-            } else {
-                console.error(`Erreur lors de la récupération de la MovieList ${id}`);
-            }
-        }
-
-        fetchMovieList();
-    }, [id]);
-
-    useEffect(() => {
-        async function fetchData() {
-            if (movieList) {
-                let allMovies = [];
-                for (const movieId of movieList.moviesId) {
-                    const res: Response = await fetch(`/api/movie/${movieId}`);
-                    const result = await res.json();
-                    allMovies.push(result);
-                }
-                setMovies(allMovies);
-                setLoading(false);
-            }
-        }
-
-        fetchData();
-    }, [movieList]);
 
     if (loading) return <Loader />;
 
@@ -129,7 +99,7 @@ export default function List({ params }: { params: { id: string } }) {
                                         >Modifier</Button>
                                         <Button
                                             variant={'outline'}
-                                            onClick={() => setDeleteList(true)}
+                                            onClick={() => setDeleteListPopUp(true)}
                                         >Supprimer</Button>
                                     </div>
                                 )}
@@ -159,7 +129,7 @@ export default function List({ params }: { params: { id: string } }) {
                             />
                         )}
 
-                        {deleteList && (
+                        {deleteListPopUp && (
                             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96">
                                     <h2 className="text-xl font-semibold mb-4 text-center">
@@ -171,7 +141,7 @@ export default function List({ params }: { params: { id: string } }) {
                                     <div className="flex justify-between gap-4">
                                         <Button
                                             variant="primary"
-                                            onClick={() => setDeleteList(false)}
+                                            onClick={() => setDeleteListPopUp(false)}
                                             className="w-full"
                                         >
                                             Annuler
@@ -187,7 +157,6 @@ export default function List({ params }: { params: { id: string } }) {
                                 </div>
                             </div>
                         )}
-
                     </div>
                 )}
             </div>

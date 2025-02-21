@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { AuthProvider } from "@/context/AuthContext";
-import { Analytics } from '@vercel/analytics/next';
 
 // export const metadata: Metadata = {
 //   title: "FilmoPhore",
@@ -27,7 +26,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 </div>
             </AuthProvider>
         </SessionProvider>
-        <Analytics />
         </body>
         </html>
     );
